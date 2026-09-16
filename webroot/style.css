@@ -1,0 +1,50 @@
+:root { color-scheme: light dark; }
+body { margin: 0; background: #f7f8fa; }
+#hyperloghush {
+  --surface: #fff; --ink: #19232e; --muted: #626d7a; --line: #e4e8ed;
+  --accent: #146b60; --tint: #eaf4f0; --subtle: #f1f3f5; --alert: #9a471d;
+  box-sizing: border-box; max-width: 760px; margin: 0 auto; padding: 34px 24px 28px;
+  background: var(--surface); color: var(--ink);
+  font: 14px/1.6 system-ui, -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+}
+#hyperloghush *, #hyperloghush *::before, #hyperloghush *::after { box-sizing: border-box; }
+#hyperloghush .eyebrow { margin: 0 0 10px; font-size: 11px; letter-spacing: .13em; color: var(--accent); font-weight: 650; }
+#hyperloghush h1 { margin: 0; font-size: 30px; line-height: 1.3; letter-spacing: -.7px; font-weight: 650; }
+#hyperloghush .version { margin-left: 10px; color: var(--muted); font-size: 12px; letter-spacing: 0; font-weight: 400; }
+#hyperloghush .intro { margin: 8px 0 24px; color: var(--muted); }
+#hyperloghush .overview { display: flex; align-items: center; justify-content: space-between; border-block: 1px solid var(--line); padding: 16px 0; gap: 12px; }
+#hyperloghush .overview strong { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
+#hyperloghush .overview span { display: block; color: var(--muted); font-size: 12px; }
+#hyperloghush button { font: inherit; min-height: 44px; cursor: pointer; touch-action: manipulation; }
+#hyperloghush button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+#hyperloghush button:disabled { cursor: wait; opacity: .55; }
+#hyperloghush .refresh { border: 1px solid var(--line); border-radius: 5px; color: var(--muted); background: var(--surface); padding: 0 13px; font-size: 12px; }
+#hyperloghush .mode-note { margin: 14px 0 4px; font-size: 12px; color: var(--muted); }
+#hyperloghush .notice { margin: 4px 0 24px; font-size: 12px; color: var(--accent); min-height: 20px; overflow-wrap: anywhere; }
+#hyperloghush .notice.error { color: var(--alert); }
+#hyperloghush .group { margin-top: 26px; }
+#hyperloghush .group-header { padding: 0 0 10px; border-bottom: 1px solid var(--ink); }
+#hyperloghush h2 { margin: 0; font-size: 16px; font-weight: 600; }
+#hyperloghush .group-index { font: 11px ui-monospace, Consolas, monospace; color: var(--muted); margin-right: 10px; }
+#hyperloghush .group-count { margin-left: 8px; font-size: 11px; color: var(--muted); font-weight: 400; }
+#hyperloghush .group-note { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
+#hyperloghush .rule { padding: 18px 0; border-bottom: 1px solid var(--line); }
+#hyperloghush h3 { margin: 0 0 3px; font: 600 13px/1.5 ui-monospace, 'SFMono-Regular', Consolas, monospace; overflow-wrap: anywhere; }
+#hyperloghush .description { margin: 0; font-size: 13px; color: var(--muted); }
+#hyperloghush .rule-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+#hyperloghush .rule-state { font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+#hyperloghush .rule-state.active { color: var(--accent); }
+#hyperloghush .choices { display: flex; flex-shrink: 0; padding: 2px; gap: 2px; background: var(--subtle); border-radius: 5px; }
+#hyperloghush .choices button { border: 0; border-radius: 3px; background: transparent; color: var(--muted); padding: 0 12px; font-size: 12px; }
+#hyperloghush .choices button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+#hyperloghush footer { margin-top: 28px; font-size: 11px; line-height: 1.9; color: var(--muted); }
+@media (max-width: 359px) {
+  #hyperloghush { padding: 26px 16px; }
+  #hyperloghush .rule-bottom { align-items: flex-start; flex-direction: column; gap: 8px; }
+  #hyperloghush .choices { width: 100%; }
+  #hyperloghush .choices button { flex: 1; }
+}
+@media (prefers-color-scheme: dark) {
+  body { background: #14181d; }
+  #hyperloghush { --surface: #191e24; --ink: #e3e9ef; --muted: #a0adb9; --line: #333e48; --accent: #85cbbb; --tint: #253b36; --subtle: #29323b; --alert: #f1b08a; }
+}

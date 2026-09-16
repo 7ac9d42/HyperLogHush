@@ -1,0 +1,14 @@
+HyperLogHush
+
+项目源码按 LICENSE 中的 MIT 许可证提供。
+
+外部接口与工具
+- KernelSU 提供模块安装、BusyBox、resetprop 和 WebUI 原生桥。
+  WebUI 依据其公开接口编写调用代码，未打包 kernelsu npm 库或 KernelSU 二进制。
+  https://github.com/tiann/KernelSU
+- Android 日志标签过滤机制来自 Android 平台接口。
+  https://developer.android.com/tools/logcat
+- resetprop 行为参考 Magisk 文档，未打包其实现。
+  https://topjohnwu.github.io/Magisk/details.html#resetprop
+以上名称仅用于说明兼容性与来源，不表示这些项目对 HyperLogHush 的背书。
+MIT 声明不对外部工具及其代码再授权；引入第三方代码时应保留其许可证与署名。

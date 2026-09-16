@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>HyperLogHush</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="rules.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main id="hyperloghush">
+    <header class="page-header">
+      <p class="eyebrow">HYPEROS · 日志降噪</p>
+      <h1>HyperLogHush<span class="version">2.1</span></h1>
+      <p class="intro">少一点噪音，保留告警与错误。</p>
+    </header>
+    <section class="overview" aria-label="当前状态">
+      <div><strong id="hush-count">— / 18</strong><span>由本模块降噪</span></div>
+      <button id="hush-refresh" class="refresh" type="button">刷新状态</button>
+    </section>
+    <p id="hush-mode" class="mode-note">仅本次开机有效 · 重启恢复默认策略</p>
+    <p id="hush-notice" class="notice" role="status" aria-live="polite">正在读取状态…</p>
+    <div id="hush-groups"></div>
+    <footer>按诊断价值由高到低排列，排序为定性判断。<br>按钮表示本次选择，实际等级以各项状态为准。<br>恢复默认仅撤销本模块设置，外部等级保持不变。<br>WARN 是过滤门槛，不会将原有日志改写为告警。</footer>
+  </main>
+</body>
+</html>

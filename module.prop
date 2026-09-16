@@ -1,0 +1,6 @@
+id=luna_log_filter
+name=HyperLogHush
+version=2.1.1
+versionCode=20101
+author=7ac9d42
+description=面向小米 17 HyperOS：18 个日志标签默认 WARN，保留告警与错误；WebUI 支持逐项临时降噪与恢复默认，无常驻进程。
