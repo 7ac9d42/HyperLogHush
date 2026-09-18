@@ -44,7 +44,6 @@ hush_known_tag()
 
 hush_supported()
 {
-    [ "$(getprop ro.product.device)" = pudding ] || return 1
     case "$(getprop ro.mi.os.version.name)" in
         OS*) return 0 ;;
         *) return 1 ;;
@@ -314,7 +313,7 @@ hush_main()
         return 1
     }
     if [ "$operation" != uninstall ] && ! hush_supported; then
-        hush_error '当前仅支持小米 17 pudding HyperOS。'
+        hush_error '当前仅支持 HyperOS。'
         return 1
     fi
     hush_lock || return 1

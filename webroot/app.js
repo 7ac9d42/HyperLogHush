@@ -49,10 +49,27 @@
       const level = row.level === 'W' ? 'WARN' : (row.level || '组件默认');
       control.state.textContent = `${sources[row.source]} · ${level}${row.choice === 'default' && managed ? ' · 恢复未完成' : ''}`;
       control.state.classList.toggle('active', managed);
+      if (row.source === 'pending' || (row.choice === 'default' && managed)) {
+        setResult(row.tag, '未完成：设置或恢复待重试', 'error');
+      } else if (row.choice === 'default') {
+        setResult(row.tag, '已恢复默认：本模块未控制该项', 'success');
+      } else if (managed) {
+        setResult(row.tag, '设置成功：已读回 WARN', 'success');
+      } else if (['external', 'persistent'].includes(row.source) || ['W', 'E', 'F', 'S', '?'].includes(row.level)) {
+        setResult(row.tag, '未执行：受外部或全局设置保护', 'warning');
+      } else {
+        setResult(row.tag, '未应用：尚未确认 WARN 设置', 'warning');
+      }
       for (const button of control.buttons) button.setAttribute('aria-pressed', String(button.dataset.action === row.choice));
     }
     root.querySelector('#hush-count').textContent = `${active} / ${tags.size}`;
     root.querySelector('#hush-mode').textContent = `仅本次开机有效 · 重启${data.diagnostic ? '回到全局诊断模式' : '恢复默认降噪'}`;
+  }
+
+  function setResult(tag, text, kind) {
+    const result = controls.get(tag).result;
+    result.textContent = text;
+    result.dataset.kind = kind;
   }
 
   function execute(action, tag) {
@@ -84,12 +101,23 @@
     if (busy) return;
     setBusy(true);
     message(action === 'status' ? '正在读取状态…' : '正在应用并核对…');
+    if (tag) setResult(tag, '正在执行…', 'pending');
+    let confirmed = false;
+    let returned = false;
     try {
       const result = await execute(action, tag);
-      if (result.stdout) render(JSON.parse(result.stdout));
+      returned = true;
+      if (result.stdout) { render(JSON.parse(result.stdout)); confirmed = true; }
       else throw new Error('未收到完整状态，请刷新核对。');
       if (Number(result.errno) !== 0) throw new Error('操作未完全成功：可能存在外部覆盖、并发操作或写入失败。请刷新核对。');
       const row = snapshot.rows.find(item => item.tag === tag);
+      if (tag) {
+        const matches = action === 'warn'
+          ? row.choice === 'warn' && row.source === 'module' && row.level === 'W'
+          : row.choice === 'default' && !['module', 'pending'].includes(row.source);
+        if (!matches) throw new Error('操作返回成功，但逐项状态未满足请求，请刷新核对。');
+        setResult(tag, action === 'warn' ? '执行成功：已设置并读回 WARN' : '执行成功：已恢复默认', 'success');
+      }
       if (row?.choice === 'default' && ['external', 'persistent'].includes(row.source)) {
         message('已撤销本模块控制；该项仍由外部设置控制。');
       } else {
@@ -98,12 +126,21 @@
     } catch (error) {
       // 失败后禁止用旧快照继续写入，必须先完成一次只读刷新。
       snapshot = null;
-      for (const control of controls.values()) {
-        control.state.textContent = '状态待刷新';
-        control.state.classList.remove('active');
-        for (const button of control.buttons) button.setAttribute('aria-pressed', 'false');
+      if (!confirmed) {
+        for (const [rowTag, control] of controls) {
+          control.state.textContent = '状态待刷新';
+          control.state.classList.remove('active');
+          setResult(rowTag, '结果未知：请刷新核对', 'warning');
+          for (const button of control.buttons) button.setAttribute('aria-pressed', 'false');
+        }
+        root.querySelector('#hush-count').textContent = `— / ${tags.size}`;
       }
-      root.querySelector('#hush-count').textContent = `— / ${tags.size}`;
+      if (tag) {
+        const detail = confirmed
+          ? (controls.get(tag).result.dataset.kind === 'success' ? '当前属性已更新，但命令返回失败，请刷新核对' : controls.get(tag).result.textContent)
+          : '请刷新核对';
+        setResult(tag, `${returned && confirmed ? '执行失败或未完成' : '结果未知'}：${detail}`, 'error');
+      }
       message(error instanceof Error ? error.message : '读取失败，请刷新核对。', true);
     } finally { setBusy(false); }
   }
@@ -129,6 +166,8 @@
       name.id = `hush-rule-${index}-${memberIndex}`;
       const bottom = element('div', 'rule-bottom');
       const state = element('span', 'rule-state', '尚未读取');
+      const result = element('p', 'rule-result', '尚未检查');
+      result.setAttribute('role', 'status');
       const choices = element('div', 'choices');
       choices.setAttribute('role', 'group');
       choices.setAttribute('aria-labelledby', name.id);
@@ -142,9 +181,9 @@
         choices.append(button);
         return button;
       });
-      controls.set(rule.tag, { buttons, state });
+      controls.set(rule.tag, { buttons, state, result });
       bottom.append(state, choices);
-      article.append(name, element('p', 'description', rule.description), bottom);
+      article.append(name, element('p', 'description', rule.description), bottom, result);
       section.append(article);
     });
     root.querySelector('#hush-groups').append(section);
